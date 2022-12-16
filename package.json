@@ -2,7 +2,7 @@
   "name": "eleventy-plugin-bookwyrm",
   "version": "1.0.0",
   "description": "Fetch a BookWyrm feed and add it as an Eleventy collection",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -21,5 +21,9 @@
   "bugs": {
     "url": "https://github.com/LewisDaleUK/eleventy-plugin-bookwyrm/issues"
   },
-  "homepage": "https://github.com/LewisDaleUK/eleventy-plugin-bookwyrm#readme"
+  "homepage": "https://github.com/LewisDaleUK/eleventy-plugin-bookwyrm#readme",
+  "dependencies": {
+    "@11ty/eleventy-fetch": "^3.0.0",
+    "rss-parser": "^3.12.0"
+  }
 }
