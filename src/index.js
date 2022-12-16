@@ -31,7 +31,6 @@ const getBook = async (url) => {
 }
 
 const getMessage = async (feedItem) => {
-	console.log(feedItem);
 	const message = await getUrl(feedItem.link);
 	const book = await getBook(message.tag[0].href);
 
@@ -39,12 +38,13 @@ const getMessage = async (feedItem) => {
 		book,
 		date: new Date(message.published),
 		status: feedItem.contentSnippet,
-	}
+	};
 }
 
 module.exports = function(eleventyConfig, options) {
-	eleventyConfig.addGlobalData("bookwyrm", async () => {
-		const url = `${options.domain}/user/${options.user}/rss`;
+	eleventyConfig.addGlobalData(options.dataKey || "bookwyrm", async () => {
+		const prefix = options.domain.startsWith('http') ? "" : "https://";
+		const url = `${prefix}${options.domain}/user/${options.user}/rss`;
 		const feed = await parser.parseURL(url);
 		return await Promise.all(feed.items.map(getMessage));
 	});
