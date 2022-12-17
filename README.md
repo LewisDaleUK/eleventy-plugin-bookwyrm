@@ -38,17 +38,23 @@ This adds a new Global Data entry called `mydata`, which contains an array with 
 e.g.
 
 ```json
-{
-  "book": {
-    "title": "NOS4A2",
-    "authors": [
-      "Joe Hill"
-    ],
-    "description": "",
-    "publishedDate": "2013-10-15T00:00:00.000Z",
-    "cover": "https://bookrastinating.com/images/covers/eae4779a-bafd-4514-aa2c-28356ca60b7d.jpeg"
-  },
-  "date": "2022-12-06T09:28:16.043Z",
-  "status": "Lewis finished reading \"NOS4A2\""
-}
+[
+	{
+	"book": {
+		"title": "NOS4A2",
+		"authors": [
+		"Joe Hill"
+		],
+		"description": "",
+		"publishedDate": "2013-10-15T00:00:00.000Z",
+		"cover": "https://bookrastinating.com/images/covers/eae4779a-bafd-4514-aa2c-28356ca60b7d.jpeg"
+	},
+	"events": [
+			{
+				"date": "2022-12-06T09:28:16.043Z",
+				"status": "Lewis finished reading \"NOS4A2\""
+			}
+		]
+	}
+]
 ```

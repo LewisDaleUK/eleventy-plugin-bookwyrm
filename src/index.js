@@ -28,6 +28,7 @@ const getBook = async (url) => {
 		const authors = await Promise.all(bookData.authors.map(getAuthor));
 		
 		return {
+			id: url,
 			title: bookData.title,
 			authors,
 			description: bookData.description,
@@ -67,14 +68,28 @@ const getFeed = async (url) => {
 		}
 	}
 
-	return feed;
+	const books = feed
+		.filter(item => item && item.book)
+		.reduce((acc, evt) => {
+			if (!acc[evt.book.id]) {
+				acc[evt.book.id] = {
+					book: evt.book,
+					events: [],
+				}
+			}
+
+			acc[evt.book.id].events.push({ status: evt.status, date: evt.date });
+			return acc;
+		}, {});
+
+	return Object.values(books)
+		.sort((a, b) => b.events[0].date - a.events[0].date);
 }
 
 module.exports = function(eleventyConfig, options) {
 	eleventyConfig.addGlobalData(options.dataKey || "bookwyrm", async () => {
 		const prefix = options.domain.startsWith('http') ? "" : "https://";
 		const url = `${prefix}${options.domain}/user/${options.user}.json`;
-		const feed = await getFeed(url);
-		return feed.filter(item => item && item.book).reverse(); // Remove "undefined"
+		return await getFeed(url);
 	});
 }

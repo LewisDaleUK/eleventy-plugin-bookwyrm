@@ -1,6 +1,6 @@
 {
   "name": "eleventy-plugin-bookwyrm",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Fetch a BookWyrm feed and add it as an Eleventy collection",
   "main": "src/index.js",
   "scripts": {
