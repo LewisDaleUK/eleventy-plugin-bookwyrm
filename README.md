@@ -1,6 +1,6 @@
 # eleventy-plugin-bookwyrm
 
-A simple plugin that, given a BookWyrm username & instance URL, will add global data to your Eleventy configuration with a parsed form of the user's RSS feed.
+A simple plugin that, given a BookWyrm username & instance URL, will add global data to your Eleventy configuration with a parsed form of the user's outbox.
 
 ## Usage
 

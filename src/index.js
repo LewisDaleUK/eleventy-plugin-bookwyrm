@@ -3,19 +3,26 @@ const Parser = require('rss-parser');
 
 const parser = new Parser();
 
-const getUrl = async (url) => await EleventyFetch(`${url}.json`, {
+const get1hUrl = async (url) => await EleventyFetch(url, {
+	duration: "1h",
+	type: "json"
+});
+
+const getUrl = async (url) => await EleventyFetch(url, {
 	duration: "1w",
 	type: "json"
 });
 
 const getAuthor = async (url) => {
-	const author = await getUrl(url);
+	const author = await getUrl(`${url}.json`);
 	
 	return author.name;
 }
 
 const getBook = async (url) => {
-	const bookData = await getUrl(url);
+	if (!url) return;
+
+	const bookData = await getUrl(`${url}.json`);
 
 	if (bookData) {
 		const authors = await Promise.all(bookData.authors.map(getAuthor));
@@ -30,22 +37,44 @@ const getBook = async (url) => {
 	}
 }
 
-const getMessage = async (feedItem) => {
-	const message = await getUrl(feedItem.link);
-	const book = await getBook(message.tag[0].href);
+const getMessage = async (message) => {
+	try {
+		const book = await getBook(message?.tag?.[0]?.href);
 
-	return {
-		book,
-		date: new Date(message.published),
-		status: feedItem.contentSnippet,
-	};
+		return {
+			book,
+			date: new Date(message.published),
+			status: message.content.replace( /(<([^>]+)>)/ig, ''),
+		};
+	} catch (e) {
+		console.error(`[eleventy-plugin-bookywyrm] Error occurred when parsing ${feedItem.link}: ${e.message}`);
+	}
+}
+
+const getFeed = async (url) => {
+	const actorFile = await getUrl(url);
+	let feed = [];
+
+	if (actorFile && actorFile.outbox) {
+		const outbox = await getUrl(actorFile.outbox);
+		if (outbox.first) {
+			let page = await get1hUrl(outbox.first);
+
+			while(page.next) {
+				feed = feed.concat(await Promise.all(page.orderedItems.map(getMessage)));
+				page = await get1hUrl(page.next);
+			}
+		}
+	}
+
+	return feed;
 }
 
 module.exports = function(eleventyConfig, options) {
 	eleventyConfig.addGlobalData(options.dataKey || "bookwyrm", async () => {
 		const prefix = options.domain.startsWith('http') ? "" : "https://";
-		const url = `${prefix}${options.domain}/user/${options.user}/rss`;
-		const feed = await parser.parseURL(url);
-		return await Promise.all(feed.items.map(getMessage));
+		const url = `${prefix}${options.domain}/user/${options.user}.json`;
+		const feed = await getFeed(url);
+		return feed.filter(item => item && item.book).reverse(); // Remove "undefined"
 	});
 }
