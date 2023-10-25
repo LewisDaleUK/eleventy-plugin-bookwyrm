@@ -40,7 +40,8 @@ const getBook = async (url) => {
 
 const getMessage = async (message) => {
 	try {
-		const book = await getBook(message?.tag?.[0]?.href);
+		const url = message?.tag?.[0]?.href;
+		const book = await getBook(url);
 
 		return {
 			book,
@@ -48,7 +49,7 @@ const getMessage = async (message) => {
 			status: message.content.replace( /(<([^>]+)>)/ig, ''),
 		};
 	} catch (e) {
-		console.error(`[eleventy-plugin-bookywyrm] Error occurred when parsing ${feedItem.link}: ${e.message}`);
+		console.error(`[eleventy-plugin-bookywyrm] Error occurred when parsing ${url}: ${e.message}`);
 	}
 }
 
