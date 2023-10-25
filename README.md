@@ -19,7 +19,7 @@ module.exports = function (eleventyConfig) {
 }
 ```
 
-This adds a new Global Data entry called `mydata`, which contains an array with the following properties:
+This adds a new Global Data entry called `readinglist`, which contains an array with the following properties:
 
 ```javascript
 {
@@ -57,4 +57,12 @@ e.g.
 		]
 	}
 ]
+```
+
+Paste the following code in your template to display available data as stringified JSON objects:
+
+```
+{% for data in readinglist %}
+{{ data | dump }}<br/><br/><br/>
+{% endfor %}
 ```
