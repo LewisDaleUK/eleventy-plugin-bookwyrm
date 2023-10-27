@@ -23,16 +23,19 @@ This adds a new Global Data entry called `readinglist`, which contains an array 
 
 ```javascript
 {
-	date: Date,
-	status: string,
-	type: "Review" | "Update",
+	
 	book: {
-		title: string,
-		authors: string[],
-		description: string,
-		publishedDate: Date,
-		cover: string,
-	}
+		title: string;
+		authors: string[];
+		description: string;
+		publishedDate: Date;
+		cover: string;
+	},
+	events: Array<{
+		date: Date;
+		status: string;
+		type: "Review" | "Update";
+	}>
 }
 ```
 
