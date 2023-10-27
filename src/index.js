@@ -39,16 +39,18 @@ const getBook = async (url) => {
 }
 
 const getMessage = async (message) => {
+	const url = message?.tag?.[0]?.href || message?.inReplyToBook;
 	try {
-		const book = await getBook(message?.tag?.[0]?.href);
+		const book = await getBook(message?.tag?.[0]?.href || message?.inReplyToBook);
 
 		return {
 			book,
 			date: new Date(message.published),
 			status: message.content.replace( /(<([^>]+)>)/ig, ''),
+			type: message.rating ? "Review" : "Update",
 		};
 	} catch (e) {
-		console.error(`[eleventy-plugin-bookywyrm] Error occurred when parsing ${message?.tag?.[0]?.href}: ${e.message}`);
+		console.error(`[eleventy-plugin-bookywyrm] Error occurred when parsing ${url}: ${e.message}`);
 	}
 }
 
@@ -61,7 +63,7 @@ const getFeed = async (url) => {
 
 		if (outbox.first) {
 			let page = await get1hUrl(outbox.first);
-			
+
 			while(page.orderedItems.length) {
 				feed = feed.concat(await Promise.all(page.orderedItems.map(getMessage)));
 
@@ -88,7 +90,7 @@ const getFeed = async (url) => {
 				}
 			}
 
-			acc[evt.book.id].events.push({ status: evt.status, date: evt.date });
+			acc[evt.book.id].events.push({ status: evt.status, date: evt.date, type: evt.type });
 			return acc;
 		}, {});
 

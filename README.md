@@ -25,6 +25,7 @@ This adds a new Global Data entry called `readinglist`, which contains an array 
 {
 	date: Date,
 	status: string,
+	type: "Review" | "Update",
 	book: {
 		title: string,
 		authors: string[],
@@ -52,7 +53,13 @@ e.g.
 	"events": [
 			{
 				"date": "2022-12-06T09:28:16.043Z",
-				"status": "Lewis finished reading \"NOS4A2\""
+				"status": "Lewis finished reading \"NOS4A2\"",
+				"type": "Update"
+			},
+			{
+				"date": "2022-12-06T09:52:12.000Z",
+				"status": "rated \"NOS4A2\" 4 stars",
+				"type": "Review"
 			}
 		]
 	}
