@@ -58,15 +58,25 @@ const getFeed = async (url) => {
 
 	if (actorFile && actorFile.outbox) {
 		const outbox = await getUrl(actorFile.outbox);
+
 		if (outbox.first) {
 			let page = await get1hUrl(outbox.first);
-
-			while(page.next) {
+			
+			while(page.orderedItems.length) {
 				feed = feed.concat(await Promise.all(page.orderedItems.map(getMessage)));
-				page = await get1hUrl(page.next);
+
+				if (page.next) {
+					page = await get1hUrl(page.next);
+				} else {
+					break;
+				}
 			}
 		}
+	} else {
+		console.error(`No actor file found for ${url}, feed will be empty`);
+		return [];
 	}
+
 
 	const books = feed
 		.filter(item => item && item.book)
